@@ -2,9 +2,4 @@ metaflow
 pylint
 numpy
 pandas
-matplotlib
 redis
-matplotlib
-seaborn
-sklearn
-pickle

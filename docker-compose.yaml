@@ -49,9 +49,9 @@ services:
       /bin/sh -c '
       sleep 5;
       /usr/bin/mc config host add s3 http://s3:9000 ${MINIO_ACCESS_KEY:-minio} ${MINIO_SECRET_ACCESS_KEY:-minio123} --api S3v4;
-      /usr/bin/mc cp /iris.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/iris.csv;
-      /usr/bin/mc cp /iris_y.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/iris_y.csv;
-      /usr/bin/mc cp /model.json s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/model.json;
+      /usr/bin/mc cp /data_playlist.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/data_playlist.csv;
+      /usr/bin/mc cp /data_playlist_batch.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/data_playlist_batch.csv;
+      /usr/bin/mc cp /svm_model.pkl s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/svm_model.pkl;
       exit 0;
       '
   redis:
