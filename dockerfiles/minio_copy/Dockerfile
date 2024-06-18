@@ -1,5 +1,5 @@
 FROM minio/mc:latest
 
-COPY iris.csv /iris.csv
-COPY iris_y.csv /iris_y.csv
-COPY model.json /model.json
+COPY data_playlist.csv /data_playlist.csv
+COPY data_playlist_batch.csv /data_playlist_batch.csv
+COPY svm_model.pkl /svm_model.pkl

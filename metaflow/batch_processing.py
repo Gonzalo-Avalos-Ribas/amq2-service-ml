@@ -26,8 +26,10 @@ class BatchProcessingModel(FlowSpec):
 
         # Se utiliza el objeto S3 para acceder a los datos desde el bucket en S3.
         s3 = S3(s3root="s3://batch/")
-        data_obj = s3.get("data/iris.csv")
+        data_obj = s3.get("data/data_playlist_batch.csv")
         self.X_batch = pd.read_csv(data_obj.path)
+        HIGH_LINEAR_CORRELATION_VARIABLES= ['danceability','energy','speechiness']
+        self.X_batch =  self.X_batch[HIGH_LINEAR_CORRELATION_VARIABLES]
         self.next(self.batch_processing)
 
     @step
@@ -35,17 +37,18 @@ class BatchProcessingModel(FlowSpec):
         """
         Paso para cargar el modelo previamente entrenado.
         """
-        from xgboost import XGBClassifier
-
         # Se utiliza el objeto S3 para acceder al modelo desde el bucket en S3.
+        import pickle
         s3 = S3(s3root="s3://batch/")
-        model_param = s3.get("artifact/model.json")
+        model_param = s3.get("artifact/svm_model.pkl")
 
-        loaded_model = XGBClassifier()
-        loaded_model.load_model(model_param.path)
-
+        with open(model_param.path, 'rb') as file:
+            loaded_model = pickle.load(file)
         self.model = loaded_model
+
         self.next(self.batch_processing)
+
+
 
     @step
     def batch_processing(self, previous_tasks):
@@ -68,7 +71,7 @@ class BatchProcessingModel(FlowSpec):
         out = model.predict(data)
 
         # Se define un diccionario de mapeo
-        label_map = {0: "setosa", 1: "versicolor", 2: "virginica"}
+        label_map = {0: "NO_PLAYLIST", 1: "PLAYLIST"}
 
         # Y obtenemos la salida del modelo en modo de string. Esto podríamos haberlo implementado directamente en
         # la lógica del modelo
