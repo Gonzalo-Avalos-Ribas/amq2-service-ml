@@ -1,5 +1,5 @@
 import os
-from metaflow import FlowSpec, step, S3
+from metaflow import FlowSpec, step, S3, Parameter
 from sklearn.svm import SVC
 import json
 
@@ -11,6 +11,8 @@ os.environ['AWS_ENDPOINT_URL_S3'] = "http://localhost:9000"
 # pylint: disable=all
 
 class BatchProcessingModel(FlowSpec):
+
+    data_file_name = Parameter('data_file_name', default='data_playlist_batch.csv')
 
     @step
     def start(self):
@@ -29,7 +31,10 @@ class BatchProcessingModel(FlowSpec):
 
         # Se utiliza el objeto S3 para acceder a los datos desde el bucket en S3.
         s3 = S3(s3root="s3://batch/")
-        data_obj = s3.get("data/data_playlist_batch.csv")
+        data_obj = s3.get(f"data/{self.data_file_name}")
+        print(f"Loaded file: {self.data_file_name}")
+        
+        # Lee y procesa el dataframe de pandas:
         self.X_batch = pd.read_csv(data_obj.path)
         HIGH_LINEAR_CORRELATION_VARIABLES= ['danceability','energy','speechiness']
         self.X_batch =  self.X_batch[HIGH_LINEAR_CORRELATION_VARIABLES]
@@ -76,16 +81,11 @@ class BatchProcessingModel(FlowSpec):
 
         # Se define un diccionario de mapeo
         label_map = {0: "NO_PLAYLIST", 1: "PLAYLIST"}
-
-        # Y obtenemos la salida del modelo en modo de string. Esto podríamos haberlo implementado directamente en
-        # la lógica del modelo
         labels = np.array([label_map[idx] for idx in out])
 
         # Se genera un hash para cada fila de datos.
         data['key'] = data.apply(lambda row: ' '.join(map(str, row)), axis=1)
         data['hashed'] = data['key'].apply(lambda x: hashlib.sha256(x.encode()).hexdigest())
-
-        print(data)
 
         # Preparamos los datos para ser enviados a Redis
         dict_redis = {}

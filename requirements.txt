@@ -3,4 +3,6 @@ pylint
 numpy
 pandas
 redis
-sklearn
+scikit-learn
+matplotlib
+seaborn
