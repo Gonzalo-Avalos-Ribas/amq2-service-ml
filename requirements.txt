@@ -3,3 +3,4 @@ pylint
 numpy
 pandas
 redis
+sklearn

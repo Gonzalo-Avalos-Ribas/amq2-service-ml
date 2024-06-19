@@ -1,11 +1,14 @@
 import os
 from metaflow import FlowSpec, step, S3
+from sklearn.svm import SVC
+import json
 
 # Configuración de las credenciales de acceso a AWS S3 (minio)
 os.environ['AWS_ACCESS_KEY_ID'] = "minio"
 os.environ['AWS_SECRET_ACCESS_KEY'] = "minio123"
 os.environ['AWS_ENDPOINT_URL_S3'] = "http://localhost:9000"
 
+# pylint: disable=all
 
 class BatchProcessingModel(FlowSpec):
 
@@ -44,11 +47,12 @@ class BatchProcessingModel(FlowSpec):
 
         with open(model_param.path, 'rb') as file:
             loaded_model = pickle.load(file)
+
+        print("THIS IS THE MODEL: ", loaded_model)
+
         self.model = loaded_model
 
         self.next(self.batch_processing)
-
-
 
     @step
     def batch_processing(self, previous_tasks):
@@ -80,6 +84,8 @@ class BatchProcessingModel(FlowSpec):
         # Se genera un hash para cada fila de datos.
         data['key'] = data.apply(lambda row: ' '.join(map(str, row)), axis=1)
         data['hashed'] = data['key'].apply(lambda x: hashlib.sha256(x.encode()).hexdigest())
+
+        print(data)
 
         # Preparamos los datos para ser enviados a Redis
         dict_redis = {}
