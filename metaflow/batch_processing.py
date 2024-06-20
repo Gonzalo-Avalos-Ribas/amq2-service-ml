@@ -50,13 +50,14 @@ class BatchProcessingModel(FlowSpec):
         s3 = S3(s3root="s3://batch/")
         model_param = s3.get("artifact/svm_model.pkl")
 
+        # Levantamos una instancia del modelo entrenado sin necesidad de hacer fit.
         with open(model_param.path, 'rb') as file:
             loaded_model = pickle.load(file)
 
+        # Mostramos el modelo cargado.
         print("THIS IS THE MODEL: ", loaded_model)
 
         self.model = loaded_model
-
         self.next(self.batch_processing)
 
     @step
@@ -92,8 +93,10 @@ class BatchProcessingModel(FlowSpec):
         for index, row in data.iterrows():
             dict_redis[row["hashed"]] = labels[index]
 
+        #Creamos el nuevo diccionario
         self.redis_data = dict_redis
 
+        #Hacemos la ingesta para pasarle el dato a las redis
         self.next(self.ingest_redis)
 
     @step
@@ -116,6 +119,7 @@ class BatchProcessingModel(FlowSpec):
         # Ahora ingestamos todos de una y dejamos que Redis resuelva de la forma más eficiente
         pipeline.execute()
 
+        # Le damos un aviso de que terminó
         self.next(self.end)
 
     @step
