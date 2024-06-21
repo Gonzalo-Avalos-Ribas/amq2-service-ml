@@ -3,13 +3,10 @@
 
 ![Diagrama de servicios](redis_batch.png)
 
-En este ejemplo, se muestra un ejemplo de un procesamiento de Batch Processing. Para ello usamos los datos de [Iris 
-Dataset](https://scikit-learn.org/stable/auto_examples/datasets/plot_iris_dataset.html), y un modelo de 
-[XGBoost](https://xgboost.readthedocs.io/en/stable/) que ya fue entrenado. Una vez que se obtienen las predicciones, 
+En este ejemplo, se muestra un ejemplo de un procesamiento de Batch Processing. Para ello usamos los datos de [Canciones de Spotify]https://raw.githubusercontent.com/Vic-bit/analisis_de_datos_CEIA/main/trabajo_final/data_playlist.csv), y un modelo de 
+[Support Vector Machine](https://scikit-learn.org/stable/modules/svm.html) que ya fue entrenado. Una vez que se obtienen las predicciones, 
 se ingestan en una base de datos de Redis, ya que queremos tener una respuesta de baja de latencia para saber la salida
-de los datos. El ejemplo no es el mejor, dado el tipo de entradas, pero esta base de datos es óptima para cuando 
-tenemos datos de usuarios y podemos identificar a los mismos, de tal forma uqe podemos guardar los datos con un user id
-y la salida del modelo, entre otros ejemplos.
+de los datos. 
 
 La implementación cuenta con una parte que funciona de forma local y otra en Docker Compose:
 
@@ -46,7 +43,7 @@ El DAG consta de varios pasos:
 - `load_data`: Carga los datos de entrada desde un bucket S3 utilizando la biblioteca Metaflow y los almacena en un 
 DataFrame de pandas.
 - `load_model`: Carga el modelo previamente entrenado desde un bucket S3 utilizando la biblioteca Metaflow y lo carga 
-en un objeto XGBClassifier.
+en un objeto SVM.
 - `batch_processing`: Utiliza el modelo cargado para realizar predicciones en lotes en los datos cargados. Genera un 
 hash para cada fila de datos y almacena las predicciones en un diccionario.
 - `ingest_redis`: Ingresa las predicciones en Redis utilizando la biblioteca de Python para Redis. Establece una 
@@ -80,10 +77,4 @@ docker compose down --rmi all --volumes
 
 Nota: Si haces esto, perderás todo en los buckets y bases de datos.
 
-## Nota Final
 
-Si desean utilizar este proyecto como base para su propia implementación, es válido. 
-Además, podrían agregar un frontend que se comunique con Redis para mejorar la experiencia 
-de usuario.
-
-También, si desean mejorar este ejemplo, ¡los Pull Requests son bienvenidos!
