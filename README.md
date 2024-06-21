@@ -3,7 +3,7 @@
 
 ![Diagrama de servicios](redis_batch.png)
 
-En este ejemplo, se muestra un ejemplo de un procesamiento de Batch Processing. Para ello usamos los datos de [Canciones de Spotify]https://raw.githubusercontent.com/Vic-bit/analisis_de_datos_CEIA/main/trabajo_final/data_playlist.csv), y un modelo de 
+En este ejemplo, se muestra un ejemplo de un procesamiento de Batch Processing. Para ello usamos los datos de [Canciones de Spotify](https://raw.githubusercontent.com/Vic-bit/analisis_de_datos_CEIA/main/trabajo_final/data_playlist.csv), y un modelo de 
 [Support Vector Machine](https://scikit-learn.org/stable/modules/svm.html) que ya fue entrenado. Una vez que se obtienen las predicciones, 
 se ingestan en una base de datos de Redis, ya que queremos tener una respuesta de baja de latencia para saber la salida
 de los datos. 
