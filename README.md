@@ -41,7 +41,7 @@ El DAG consta de varios pasos:
 
 - `start`: Este paso inicia el flujo e imprime un mensaje de inicio. Luego, avanza para cargar los datos y el modelo.
 - `load_data`: Carga los datos de entrada desde un bucket S3 utilizando la biblioteca Metaflow y los almacena en un 
-DataFrame de pandas.
+DataFrame de pandas. También se realiza un preprocesamiento. Para esto se levantan los transformadores de buckets de S3.
 - `load_model`: Carga el modelo previamente entrenado desde un bucket S3 utilizando la biblioteca Metaflow y lo carga 
 en un objeto SVM.
 - `batch_processing`: Utiliza el modelo cargado para realizar predicciones en lotes en los datos cargados. Genera un 
