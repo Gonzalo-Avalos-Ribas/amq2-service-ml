@@ -52,6 +52,9 @@ services:
       /usr/bin/mc cp /data_playlist.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/data_playlist.csv;
       /usr/bin/mc cp /data_playlist_batch.csv s3/${DATA_REPO_BUCKET_NAME:-data}/data/data_playlist_batch.csv;
       /usr/bin/mc cp /svm_model.pkl s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/svm_model.pkl;
+      /usr/bin/mc cp /danceability.pkl s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/danceability.pkl;
+      /usr/bin/mc cp /energy.pkl s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/energy.pkl;
+      /usr/bin/mc cp /speechiness.pkl s3/${DATA_REPO_BUCKET_NAME:-data}/artifact/speechiness.pkl;
       exit 0;
       '
   redis:

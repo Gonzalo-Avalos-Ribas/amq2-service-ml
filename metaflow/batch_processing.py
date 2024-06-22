@@ -1,7 +1,6 @@
 import os
 from metaflow import FlowSpec, step, S3, Parameter
-from sklearn.svm import SVC
-import json
+import data_preprocess
 
 # Configuración de las credenciales de acceso a AWS S3 (minio)
 os.environ['AWS_ACCESS_KEY_ID'] = "minio"
@@ -36,8 +35,8 @@ class BatchProcessingModel(FlowSpec):
         
         # Lee y procesa el dataframe de pandas:
         self.X_batch = pd.read_csv(data_obj.path)
-        HIGH_LINEAR_CORRELATION_VARIABLES= ['danceability','energy','speechiness']
-        self.X_batch =  self.X_batch[HIGH_LINEAR_CORRELATION_VARIABLES]
+
+        self.X_batch =  data_preprocess.transform(self.X_batch)
         self.next(self.batch_processing)
 
     @step
